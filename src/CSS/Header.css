@@ -1,0 +1,35 @@
+.header{
+    display: grid;
+    grid-template-columns: 250px auto 200px;
+    height: 50px;
+    align-items: center;
+    border-bottom: 1px solid whitesmoke;
+    padding: 10px;
+  }
+  .header__left{
+    display: flex;
+    align-items: center;
+  }
+  .header__middle{
+    display: flex;
+    flex:0.7
+  }
+
+  .search_mail{
+    background-color: whitesmoke;
+    border-radius: 10px;
+    display: flex;
+    flex: 0.7;
+  }
+
+  .search_mail input{
+    display: flex;
+    flex: 1;
+    background-color: transparent;
+    outline: none;
+    border: none;
+  }
+  .header__right{
+    display: flex;
+    align-items: center;
+  }

@@ -1,24 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, Router, Switch } from "react-router-dom";
+import { userAction } from "./features/userSlice";
+import "./App.css";
+import Compose from "./Compose";
+import Emaildetail from "./Emaildetail";
+import EmailList from "./EmailList";
+import { auth } from "./firebase";
+import Header from "./Header";
+import Login from "./Login";
+import Sidebar from "./Sidebar";
 
 function App() {
+  const isMessageOpen = useSelector((state) => state.mail.sendMessageIsOpen);
+  const user=useSelector((state)=>state.user.value);
+  const dispatch=useDispatch();
+
+  useEffect(()=>{
+    auth.onAuthStateChanged((user)=>{
+      if(user){
+        dispatch(userAction.signin({
+          displayName:user.displayName,
+          photoURL:user.photoURL,
+          email:user.email
+        }))
+      }else{
+        dispatch(userAction.signout())
+      }
+    })
+  },[])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {user && (
+        <div className="App">
+          <Header />
+          <div className="app_body">
+            <Sidebar />
+            <Switch>
+              <Route exact path="/">
+                <EmailList />
+              </Route>
+              <Route path="/mail">
+                <Emaildetail />
+              </Route>
+            </Switch>
+          </div>
+          {isMessageOpen && <Compose />}
+        </div>
+      )}
+      {!user && <Login />}
+    </>
   );
 }
 
