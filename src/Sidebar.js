@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./CSS/sidebar.css";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
@@ -21,30 +21,40 @@ import { mailAction } from "./features/mailSlice";
 import { useHistory } from "react-router-dom";
 function Sidebar() {
   const dispatch = useDispatch();
-  const history=useHistory();
+  const history = useHistory();
   const active = useSelector((state) => state.mail.active);
   const mails = useSelector((state) => state.mail.onScreenMails);
- 
- //inbox
+
+  console.log("side", mails);
+  const [unReadMails, setUnReadMails] = useState([]);
+  console.log("unReadMails", unReadMails);
+  useEffect(() => {
+    const unReadMail = mails.filter((mailItem) => {
+      console.log('mailItem',mailItem)
+      return mailItem.data.read === false;
+    });
+    setUnReadMails(unReadMail);
+  }, [mails]);
+
+  //inbox
   const inboxActive = () => {
     dispatch(mailAction.setMailType("primary"));
     dispatch(mailAction.setActive("inbox"));
-    history.push('/')
+    history.push("/");
   };
 
-   //sent
+  //sent
   const sentActive = () => {
     dispatch(mailAction.setMailType("sent"));
     dispatch(mailAction.setActive("sent"));
-    history.push('/')
+    history.push("/");
   };
 
-
-   //delete
+  //delete
   const deleteActive = () => {
     dispatch(mailAction.setMailType("delete"));
     dispatch(mailAction.setActive("delete"));
-    history.push('/')
+    history.push("/");
   };
   return (
     <div className="sidebar">
@@ -60,7 +70,7 @@ function Sidebar() {
       <Sidebaroptions
         ICON={InboxIcon}
         title="Inbox"
-        number={mails.length}
+        number={unReadMails.length}
         isactive={active === "inbox" ? true : false}
         onClick={inboxActive}
       />
@@ -74,7 +84,6 @@ function Sidebar() {
       <Sidebaroptions
         ICON={SendIcon}
         title="Sent"
-        number={mails.length}
         isactive={active === "sent" ? true : false}
         onClick={sentActive}
       />
