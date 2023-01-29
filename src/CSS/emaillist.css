@@ -80,6 +80,7 @@
 .emailbody .emailbody__left {
   display: flex;
   align-items: center;
+  justify-content: space-around;
   min-width: 300px;
   flex: 20%;
 }
@@ -94,10 +95,18 @@
   font-size: 14px;
 }
 
-.emailbody__left--unread h4 {
+.emailbody__left--read h4 {
   font-weight: normal;
 }
 
+
+.emailbody__left .msgRead{
+  color: blue !important;
+}
+
+.emailbody__leftLabel{
+  min-width: 130px;
+}
 .emailbody .emailbody__middle {
   display: flex;
   align-items: center;
@@ -113,7 +122,7 @@
   max-width: 550px;
 }
 
-.emailbody__middle__msg--unread p b {
+.emailbody__middle__msg--read p b {
   font-weight: normal;
 }
 
