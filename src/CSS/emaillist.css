@@ -81,7 +81,7 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  min-width: 300px;
+  min-width: 350px;
   flex: 20%;
 }
 
@@ -105,7 +105,13 @@
 }
 
 .emailbody__leftLabel{
-  min-width: 130px;
+  min-width: 40%;
+  text-align: start;
+  margin-left: 2px;
+}
+
+.emailbody__left_RightLabel{
+  min-width: 60%;
 }
 .emailbody .emailbody__middle {
   display: flex;

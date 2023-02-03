@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import EmailListSetting from "./EmailListSetting";
 import "./CSS/emaillist.css";
 import Emailtype from "./Emailtype";
 import Emailbody from "./Emailbody";
-import { db } from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { mailAction } from "./features/mailSlice";
+import useRetrieve from "./hooks/use-Retrieve";
 
 function EmailList() {
   const dispatch = useDispatch();
@@ -16,66 +16,12 @@ function EmailList() {
   const mailType = useSelector((state) => state.mail.mailType);
   const onScreenMails = useSelector((state) => state.mail.onScreenMails);
 
-  console.log('deleteMails',deleteMails);
+  console.log("deleteMails", deleteMails);
 
-  console.log('currentUser',currentUser)
-
-  useEffect(() => {
-    db.collection("ReceivedMails")
-      .doc(currentUser.email)
-      .collection("mail")
-      .onSnapshot((snapshot) => {
-        console.log(snapshot);
-        dispatch(
-          mailAction.setReceivedMails(
-            snapshot.docs.map((doc) => {
-              return {
-                id: doc.id,
-                data: doc.data(),
-              };
-            })
-          )
-        );
-      });
-  }, [currentUser]);
-
-  useEffect(() => {
-    db.collection("SentMails")
-      .doc(currentUser.email)
-      .collection("mail")
-      .onSnapshot((snapshot) => {
-        console.log(snapshot);
-        dispatch(
-          mailAction.setSentMails(
-            snapshot.docs.map((doc) => {
-              return {
-                id: doc.id,
-                data: doc.data(),
-              };
-            })
-          )
-        );
-      });
-  }, [currentUser]);
-
-  useEffect(() => {
-    db.collection("deletedMails")
-      .doc(currentUser.email)
-      .collection("mail")
-      .onSnapshot((snapshot) => {
-        console.log(snapshot);
-        dispatch(
-          mailAction.setDeleteMails(
-            snapshot.docs.map((doc) => {
-              return {
-                id: doc.id,
-                data: doc.data(),
-              };
-            })
-          )
-        );
-      });
-  }, [currentUser]);
+  console.log("currentUser", currentUser);
+  useRetrieve("ReceivedMails");
+  useRetrieve("SentMails");
+  useRetrieve("deletedMails");
 
   useEffect(() => {
     if (mailType === "primary") {

@@ -5,7 +5,6 @@ import { Button } from "@mui/material";
 import InboxIcon from "@mui/icons-material/Inbox";
 import Sidebaroptions from "./Sidebaroptions";
 import StarRateIcon from "@mui/icons-material/StarRate";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import LabelImportantIcon from "@mui/icons-material/LabelImportant";
 import SendIcon from "@mui/icons-material/Send";
@@ -18,44 +17,44 @@ import VideocamIcon from "@mui/icons-material/Videocam";
 import KeyboardIcon from "@mui/icons-material/Keyboard";
 import { useDispatch, useSelector } from "react-redux";
 import { mailAction } from "./features/mailSlice";
-import { useHistory } from "react-router-dom";
+import useSidebar from "./hooks/use-Sidebar";
 function Sidebar() {
   const dispatch = useDispatch();
-  const history = useHistory();
   const active = useSelector((state) => state.mail.active);
   const mails = useSelector((state) => state.mail.onScreenMails);
 
   console.log("side", mails);
   const [unReadMails, setUnReadMails] = useState([]);
+  const actionActive = useSidebar();
   console.log("unReadMails", unReadMails);
   useEffect(() => {
     const unReadMail = mails.filter((mailItem) => {
-      console.log('mailItem',mailItem)
+      console.log("mailItem", mailItem);
       return mailItem.data.read === false;
     });
     setUnReadMails(unReadMail);
   }, [mails]);
 
-  //inbox
-  const inboxActive = () => {
-    dispatch(mailAction.setMailType("primary"));
-    dispatch(mailAction.setActive("inbox"));
-    history.push("/");
-  };
+  // //inbox
+  // const inboxActive = () => {
+  //   dispatch(mailAction.setMailType("primary"));
+  //   dispatch(mailAction.setActive("inbox"));
+  //   history.push("/");
+  // };
 
-  //sent
-  const sentActive = () => {
-    dispatch(mailAction.setMailType("sent"));
-    dispatch(mailAction.setActive("sent"));
-    history.push("/");
-  };
+  // //sent
+  // const sentActive = () => {
+  //   dispatch(mailAction.setMailType("sent"));
+  //   dispatch(mailAction.setActive("sent"));
+  //   history.push("/");
+  // };
 
-  //delete
-  const deleteActive = () => {
-    dispatch(mailAction.setMailType("delete"));
-    dispatch(mailAction.setActive("delete"));
-    history.push("/");
-  };
+  // //delete
+  // const deleteActive = () => {
+  //   dispatch(mailAction.setMailType("delete"));
+  //   dispatch(mailAction.setActive("delete"));
+  //   history.push("/");
+  // };
   return (
     <div className="sidebar">
       <Button
@@ -72,7 +71,9 @@ function Sidebar() {
         title="Inbox"
         number={unReadMails.length}
         isactive={active === "inbox" ? true : false}
-        onClick={inboxActive}
+        onClick={() => {
+          actionActive("primary", "inbox");
+        }}
       />
       <Sidebaroptions ICON={StarRateIcon} title="starred" number="500" />
       <Sidebaroptions ICON={WatchLaterIcon} title="snoozed" number="224" />
@@ -85,7 +86,7 @@ function Sidebar() {
         ICON={SendIcon}
         title="Sent"
         isactive={active === "sent" ? true : false}
-        onClick={sentActive}
+        onClick={() => actionActive("sent", "sent")}
       />
       <Sidebaroptions ICON={DraftsIcon} title="Drafts" number="254" />
       <Sidebaroptions ICON={LabelIcon} title="Category" number="224" />
@@ -94,7 +95,7 @@ function Sidebar() {
         title="[Map]/Trash"
         number={mails.length}
         isactive={active === "delete" ? true : false}
-        onClick={deleteActive}
+        onClick={() => actionActive("delete", "delete")}
       />
       <Sidebaroptions ICON={FindInPageIcon} title="Documents" number="224" />
       <Sidebaroptions ICON={ExpandMoreIcon} title="More" number="224" />

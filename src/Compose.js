@@ -20,7 +20,9 @@ import { db } from "./firebase";
 // import 'firebase/compat/firestore';
 import { serverTimestamp } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
-
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import draftToHtml from "draftjs-to-html";
 function Compose() {
   const dispatch = useDispatch();
   const toRef = useRef();
@@ -28,6 +30,7 @@ function Compose() {
   const messageRef = useRef();
   const user = useSelector((state) => state.user.value);
   const [id, setId] = useState();
+  const [state,setState]=useState("")
   useEffect(() => {
     setId(uuidv4());
   }, []);
@@ -38,20 +41,26 @@ function Compose() {
 
   let enteredEmail;
   let enteredSubject;
-  let enteredMessage;
+
+  const onContentStateChange=(contentState) => {
+    setState({
+         contentState,
+       });
+     };
+   
+   
+     console.log("state",draftToHtml(state.contentState));
 
   const sendMail = (event) => {
     event.preventDefault();
     enteredEmail = toRef.current.value;
     enteredSubject = subjectRef.current.value;
-    enteredMessage = messageRef.current.value;
 
     createMailId();
 
     toRef.current.value = "";
     subjectRef.current.value = "";
-    messageRef.current.value = "";
-
+console.log('sendddddddddddddddddddddd')
     db.collection("SentMails")
       .doc(user.email)
       .collection("mail")
@@ -60,7 +69,7 @@ function Compose() {
         id: id,
         recipents: enteredEmail,
         subject: enteredSubject,
-        body: enteredMessage,
+        body: draftToHtml(state.contentState),
         sender: user.email,
         read: true,
         senderName: user.displayName,
@@ -74,7 +83,6 @@ function Compose() {
       });
 
     dispatch(mailAction.toggleHandler());
-    console.log(enteredEmail, enteredMessage, enteredSubject);
   };
 
   const addReceivedMail = () => {
@@ -86,7 +94,7 @@ function Compose() {
         id: id,
         recipents: enteredEmail,
         subject: enteredSubject,
-        body: enteredMessage,
+        body: draftToHtml(state.contentState),
         sender: user.email,
         read: false,
         senderName: user.displayName,
@@ -118,7 +126,13 @@ function Compose() {
           <div className="compose__bodyForm">
             <input type="email" placeholder="Receipents" ref={toRef} required />
             <input type="text" placeholder="Subject" ref={subjectRef} />
-            <textarea rows="20" ref={messageRef} />
+               <Editor
+              // editorState={editorState}
+              toolbarClassName="toolbarClassName"
+              wrapperClassName="wrapperClassName"
+              editorClassName="editorClassName"
+              onContentStateChange={onContentStateChange}
+            />
           </div>
         </div>
 

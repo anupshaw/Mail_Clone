@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { mailAction } from "./features/mailSlice";
 import { db } from "./firebase";
+import { htmlToText } from "html-to-text";
 
 function Emailbody(props) {
   const { data, id, senderName, subject, senderEmail, message, time } = props;
@@ -63,12 +64,14 @@ function Emailbody(props) {
           <LabelOutlinedIcon />
           {data.read === false && <FiberManualRecordIcon className="msgRead" />}
         </div>
-
-        {mailType === "sent" ? (
+<div className="emailbody__left_RightLabel">
+{mailType === "sent" ? (
           <h4>To:{data.recipents}</h4>
         ) : (
           <h4>{senderName}</h4>
         )}
+</div>
+      
       </div>
       <div className="emailbody__middle">
         <div
@@ -77,7 +80,7 @@ function Emailbody(props) {
           }`}
         >
           <p>
-            <b>{subject}</b> {message}
+            <b>{subject}</b> {htmlToText(message)}
           </p>
         </div>
       </div>

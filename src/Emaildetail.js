@@ -16,12 +16,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { db } from "./firebase";
+import { htmlToText } from "html-to-text";
 
 function Emaildetail() {
   const history = useHistory();
   const mail = useSelector((state) => state.mail.selectedMessage);
   const mailType = useSelector((state) => state.mail.mailType);
   const currentUser = useSelector((state) => state.user.value.email);
+  const message = htmlToText(mail.message);
 
   let deleteCollectionType = "ReceivedMails";
 
@@ -148,7 +150,7 @@ function Emaildetail() {
           </div>
         </div>
         <div className="emaildetails__body">
-          <p>{mail.message}</p>
+          <p>{message}</p>
         </div>
       </div>
     </div>
